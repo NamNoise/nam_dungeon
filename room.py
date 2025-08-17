@@ -1,5 +1,5 @@
 class Room:
-    def __init__(self, name):
+    def __init__(self, name, room_type="normal", description=""):
         self.name = name
         self.description = description
         self.room_type = room_type
@@ -28,7 +28,11 @@ class Room:
             print(f"The {room.name} is to the {direction}.")
 
     def move(self, direction):
-        return self.linked_rooms.get(direction, self)
+        if direction in self.linked_rooms:
+            return self.linked_rooms[direction]
+        else:
+            print("You can't go that way!")
+            return self
     
     def get_character(self):
         return self.character

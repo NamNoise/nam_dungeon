@@ -4,9 +4,9 @@ from item import Item
 from puzzle import Puzzle
 
 spawn = Room("Spawnpoint", "A dimly lit stone chamber, cold air flows in from unseen cracks.")
-treasure_hall = Room("Treasure Hall", "A glittering hall with chests lining the walls.", room_type="loot")
-puzzle_room = Room("Puzzle Room", "An ancient room filled with mysterious carvings.", room_type="puzzle")
-exit_room = Room("Dungeon Exit", "A massive stone gate stands before you. Freedom lies beyond.", room_type="exit")
+treasure_hall = Room("Treasure Hall", "A glittering hall with chests lining the walls.")
+puzzle_room = Room("Puzzle Room", "An ancient room filled with mysterious carvings.")
+exit_room = Room("Dungeon Exit", "A massive stone gate stands before you. Freedom lies beyond.")
 
 spawn.link_room(treasure_hall, "north")
 treasure_hall.link_room(spawn, "south")
@@ -96,7 +96,7 @@ while not (dead or escaped):
         else:
             print("Incorrect answer. Try again.")
     
-    elif command == "open exit" and current_room.room_type = "exit":
+    elif command == "open exit" and current_room.room_type == "exit":
         print("You approach the massive stone gate.")
         if "ancient key" in bag:
             print("You unlock the massive stone gate and step into freedom!")

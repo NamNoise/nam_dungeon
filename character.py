@@ -36,3 +36,30 @@ class Enemy(Character):
 class Friend(Character):
     def pat(self):
         print(f"{self.name} smiles and pats you back.")
+
+class Player(Character):
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        self.inventory = []
+
+    def move_to(self, room):
+        print(f"You move to {room.name}.")
+        return room
+        if not self.puzzle.solved:
+            print("You can now attempt to solve the puzzle.")
+        guess = input("What is your guess? ")
+        if current_room.puzzle.attempt(guess):
+            print("You solved the puzzle!")
+            current_room.puzzle.solved = True
+            current_room.puzzle = None
+        else:
+            print("Incorrect guess. Try again.")
+
+    def add_to_inventory(self, item):
+        self.inventory.append(item):
+        print(f"You added {item} to your inventory.")
+        if not current_room.puzzle.solved:
+            pass
+            print("You can now attempt to solve the puzzle.")
+        
+        
