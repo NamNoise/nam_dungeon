@@ -53,5 +53,5 @@ class Room:
     
     def reveal_hidden(self, direction):
         if direction in self.hidden_rooms:
-            self.hidden_room[direction] = self.hidden_rooms.pop(direction)
+            self.hidden_rooms[direction] = self.hidden_rooms.pop(direction)
             print(f"A hidden path to the {direction} is revealed!")
