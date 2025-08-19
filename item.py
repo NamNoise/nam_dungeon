@@ -11,4 +11,7 @@ class Item:
 
     def describe(self):
         print(f"You see a {self.name} - {self.description}")
+    
+    def use(self):
+        print(f"You use the {self.name}.")
         
