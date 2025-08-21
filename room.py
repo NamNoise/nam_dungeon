@@ -1,5 +1,5 @@
 class Room:
-    def __init__(self, name, room_type="normal", description=""):
+    def __init__(self, name, description, room_type="normal"):
         self.name = name
         self.description = description
         self.room_type = room_type
@@ -20,6 +20,9 @@ class Room:
 
     def set_item(self, item):
         self.item = item
+        
+    def get_item(self):
+        return self.item
 
     def link_room(self, room, direction):
         self.linked_rooms[direction] = room
@@ -36,14 +39,7 @@ class Room:
             print("There's no obvious way out here.")
 
     def move(self, direction):
-        if direction in self.linked_rooms:
-            return self.linked_rooms[direction]
-        else:
-            print("You can't go that way!")
-            return self
-
-    def get_item(self):
-        return self.item
+        return self.linked_rooms.get(direction, None)
 
     def set_puzzle(self, puzzle):
         self.puzzle = puzzle
@@ -53,5 +49,5 @@ class Room:
     
     def reveal_hidden(self, direction):
         if direction in self.hidden_rooms:
-            self.hidden_rooms[direction] = self.hidden_rooms.pop(direction)
+            self.linked_rooms[direction] = self.hidden_rooms.pop(direction)
             print(f"A hidden path to the {direction} is revealed!")

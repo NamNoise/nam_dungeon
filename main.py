@@ -9,14 +9,16 @@ player = Player("Hero", "A brave adventurer exploring the dungeon.")
 spawn = Room("Spawnpoint", "A dimly lit stone chamber, cold air flows in from unseen cracks.")
 treasure_hall = Room("Treasure Hall", "A glittering hall with chests lining the walls.")
 puzzle_room = Room("Puzzle Room", "An ancient room filled with mysterious carvings.")
-exit_room = Room("Dungeon Exit", "A massive stone gate stands before you. Freedom lies beyond.")
+exit_room = Room("Dungeon Exit", "A massive stone gate stands before you. Freedom lies beyond.", "exit")
+hidden_room = Room("Hidden Chamber", "A secret chamber filled with ancient treasures.")
 
 spawn.link_room(treasure_hall, "north")
 treasure_hall.link_room(spawn, "south")
 treasure_hall.link_room(puzzle_room, "east")
 puzzle_room.link_room(treasure_hall, "west")
 puzzle_room.link_room(exit_room, "north")
-puzzle_room.add_hidden_room("hidden_room", "east") #illusion wall
+
+puzzle_room.add_hidden_room(hidden_room, "east") #illusion wall
 
 goblin = Enemy("Goblin", "A small, green, and very grumpy dungeon inhabitant.")
 goblin.set_conversation("Grrr... You shall not pass without a fight!")
@@ -32,6 +34,9 @@ spawn.set_item(sword)
 
 ancient_key = Item("ancient key", "An old iron key, looks like it could open a hidden door.")
 treasure_hall.set_item(ancient_key)
+
+treasure = Item("golden idol", "An ancient treasure from a hidden chamber.")
+hidden_room.set_item(treasure)
 
 riddle = Puzzle("What walks on four legs in the morning, two at noon, and three at night?", "human")
 puzzle_room.set_puzzle(riddle)

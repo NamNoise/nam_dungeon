@@ -25,8 +25,8 @@ class Enemy(Character):
     def set_weakness(self, weakness):
         self.weakness = weakness
 
-    def fight(self, item):
-        if item == self.weakness:
+    def fight(self, item_name):
+        if item_name.lower() == str(self.weakness).lower():
             print(f"You fend off {self.name} with the {item}!")
             return True
         else:
@@ -45,13 +45,22 @@ class Player(Character):
         super().__init__(name, description)
         self.inventory = []
 
-    def add_to_inventory(self, item_name):
-        self.inventory.append(item_name)
-        print(f"{item_name} has been added to your inventory.")
+    def add_to_inventory(self, item_obj):
+        self.inventory.append(item_obj)
+        print(f"{item_obj.name} has been added to your inventory.")
+
+    def has_item(self, name):
+        name = name.lower()
+        return any(it.get.name().lower() == name for it in self.inventory)
 
     def move_to(self, room):
         print(f"You move to {room.name}.")
         return room
 
-        
-        
+    def list_inventory(self):
+        if not self.inventory:
+            print("Your bag is empty.")
+            return
+        print("You have the following items in your bag:")
+        for it in self.inventory:
+            print(f"- {it.name}: {it.description}")     
