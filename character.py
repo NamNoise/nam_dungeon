@@ -45,22 +45,23 @@ class Player(Character):
         super().__init__(name, description)
         self.inventory = []
 
-    def add_to_inventory(self, item_obj):
-        self.inventory.append(item_obj)
-        print(f"{item_obj.name} has been added to your inventory.")
+    def take_item(self, item):
+        self.inventory.append(item)
+        print(f"You added {item.name} to your bag.")
 
-    def has_item(self, name):
-        name = name.lower()
-        return any(it.get.name().lower() == name for it in self.inventory)
-
-    def move_to(self, room):
-        print(f"You move to {room.name}.")
-        return room
-
-    def list_inventory(self):
-        if not self.inventory:
-            print("Your bag is empty.")
-            return
+    def show_inventory(self):
         print("You have the following items in your bag:")
+        if self.inventory:
+            for it in self.inventory:
+                print(f"- {it.name}")
+        else:
+            print("Your bag is empty.")
+
+    def has_item(self, item_name):
+        return any(it.name.lower() == item_name.lower() for it in self.inventory)
+
+    def fight_enemy(self, enemy, item_name):
         for it in self.inventory:
-            print(f"- {it.name}: {it.description}")     
+            if it.name.lower() == item_name.lower():
+                return enemy.fight(it.name.lower())
+        print("You don't have that item to fight with!") 
