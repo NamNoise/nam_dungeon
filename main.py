@@ -2,6 +2,7 @@ from room import Room
 from character import Enemy, Friend, Player
 from item import Item
 from puzzle import Puzzle
+from glassbridge import GlassBridge
 import time
 
 player = Player("Hero", "A brave adventurer exploring the dungeon.")
@@ -10,6 +11,7 @@ spawn = Room("Spawnpoint", "A dimly lit stone chamber, cold air flows in from un
 treasure_hall = Room("Treasure Hall", "A glittering hall with chests lining the walls.")
 puzzle_room = Room("Puzzle Room", "An ancient room filled with mysterious carvings.")
 exit_room = Room("Dungeon Exit", "A massive stone gate stands before you. Freedom lies beyond.", "exit")
+glass_bridge = GlassBridge(steps=5)
 hidden_room = Room("Hidden Chamber", "A secret chamber filled with ancient treasures.")
 
 spawn.link_room(treasure_hall, "north")
@@ -40,6 +42,7 @@ riddle = Puzzle("What walks on four legs in the morning, two at noon, and three 
 puzzle_room.set_puzzle(riddle)
 
 current_room = spawn
+previous_room = None
 dead = False
 escaped = False
 
@@ -50,6 +53,17 @@ print("Type 'exit' to exit at any time, or 'quit' to end the game.")
 while not (dead or escaped):
     print("\n")
     current_room.get_details()
+
+    if current_room.name == "Hidden Chamber":
+        print("You step into a hidden chamber. Treasures glitter around you.")
+        room_item = current_room.get_item()
+        if room_item:
+            room_item.describe()
+        print("You can take the treasure with you.")
+        time.sleep(5)
+        print("A mysterious force prevents you from staying here for long...")
+        time.sleep(2)
+        current_room = previous_room
 
     inhabitant = current_room.get_character()
     if inhabitant:
@@ -68,6 +82,7 @@ while not (dead or escaped):
     if command in ["north", "south", "east", "west"]:
         next_room = current_room.move(command)
         if next_room:
+            previous_room = current_room
             current_room = next_room
             print(f"You move to {current_room.name}.")
         else:
@@ -117,18 +132,42 @@ while not (dead or escaped):
         else:
             print("Incorrect answer. Try again.")
     
-    elif command == "open exit" and current_room.room_type == "exit":
-        print("You approach the massive stone gate.")
-        if "ancient key" in player.inventory:
-            print("You have the ancient key. Do you want to use it to open the gate? (yes/no)")
-            use_key = input("> ").lower().strip()
-            if use_key == "yes":
-                print("You insert the ancient key into the lock and turn it. The gate creaks open!")
-                current_room = exit_room
-                print("You step through the gate and into the light of freedom!")
-            escaped = True
+    elif command == "cross bridge" and current_room.room_type == "exit":
+        if glass_bridge.completed:
+            print("You have already crossed the bridge safely.")
+        elif glass_bridge.failed:
+            print("The glass shatters beneath you! You fall into the abyss...")
+            dead = True
         else:
-            print("The gate is locked. You need an ancient key to open it. Search for it in the dungeon.")
+            print("Step onto the bridge... left or right?")
+            choice = input("Your choice: ").lower().strip()
+            if choice in ["left", "right"]:
+                if glass_bridge.attempt(choice):
+                    if glass_bridge.completed:
+                        print("You crossed the glass bridge safely!")
+                    else:
+                        print("Safe! You move forward to the next step...")
+                else:
+                    print("CRACK! The glass shatters beneath you! You fall into the abyss...")
+                    dead = True
+            else:
+                print("Invalid choice. You must choose 'left' or 'right'.")
+    
+    elif command == "open exit" and current_room.room_type == "exit":
+        if not glass_bridge.completed:
+            print("You need to cross the glass bridge first before opening the exit!")
+        else:
+            print("You approach the massive stone gate.")
+            if "ancient key" in player.inventory:
+                print("You have the ancient key. Do you want to use it to open the gate? (yes/no)")
+                use_key = input("> ").lower().strip()
+                if use_key == "yes":
+                    print("You insert the ancient key into the lock and turn it. The gate creaks open!")
+                    current_room = exit_room
+                    print("You step through the gate and into the light of freedom!")
+                escaped = True
+            else:
+                print("The gate is locked. You need an ancient key to open it. Search for it in the dungeon.")
     
     elif command == "quit":
         print("Aww, already leaving? Come back with more courage next time!")
