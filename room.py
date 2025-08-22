@@ -51,3 +51,6 @@ class Room:
         if direction in self.hidden_rooms:
             self.linked_rooms[direction] = self.hidden_rooms.pop(direction)
             print(f"A hidden path to the {direction} is revealed!")
+            print("You can now move in that direction.")
+        else:
+            print(f"No hidden room in the {direction} direction.")

@@ -27,7 +27,7 @@ class Enemy(Character):
 
     def fight(self, item_name):
         if item_name.lower() == str(self.weakness).lower():
-            print(f"You fend off {self.name} with the {item}!")
+            print(f"You fend off {self.name} with the {item_name}!")
             return True
         else:
             print(f"{self.name} overpowers you with its strength...")
@@ -47,7 +47,7 @@ class Player(Character):
 
     def take_item(self, item):
         self.inventory.append(item)
-        print(f"You added {item.name} to your bag.")
+        print(f"You added {item} to your bag.")
 
     def show_inventory(self):
         print("You have the following items in your bag:")
