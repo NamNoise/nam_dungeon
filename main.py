@@ -9,7 +9,7 @@ player = Player("Hero", "A brave adventurer exploring the dungeon.")
 
 spawn = Room("Spawnpoint", "A dimly lit stone chamber, cold air flows in from unseen cracks.")
 treasure_hall = Room("Treasure Hall", "A glittering hall with chests lining the walls.")
-puzzle_room = Room("Puzzle Room", "An ancient room filled with mysterious carvings.")
+puzzle_room = Room("Puzzle Room", "An ancient room filled with mysterious carvings.", "puzzle")
 exit_room = Room("Dungeon Exit", "A massive stone gate stands before you. Freedom lies beyond.", "exit")
 glass_bridge = GlassBridge(steps=5)
 hidden_room = Room("Hidden Chamber", "A secret chamber filled with ancient treasures.")
@@ -59,11 +59,29 @@ while not (dead or escaped):
         room_item = current_room.get_item()
         if room_item:
             room_item.describe()
-        print("You can take the treasure with you.")
-        time.sleep(5)
-        print("A mysterious force prevents you from staying here for long...")
+            print("You can type 'take' to grab the treasure.")
+        else:
+            print("The chamber now stands empty, its treasures already claimed.")
+
+        command = input("> ").lower().strip()
+        if command == "take" and room_item:
+            print(f"You take the {room_item.name}.")
+            player.take_item(room_item.name)
+            current_room.set_item(None)
+        elif command == "bag":
+            if player.inventory:
+                print("You have the following items in your bag:")
+                for i in player.inventory:
+                    print(f"- {i}")
+            else:
+                print("Your bag is empty.")
+        else:
+            print("You hesitate, and the chamber begins to push you back...")
+
         time.sleep(2)
+        print("A mysterious force pushes you back to the Treasure Hall.")
         current_room = previous_room
+        continue
 
     inhabitant = current_room.get_character()
     if inhabitant:
@@ -85,6 +103,8 @@ while not (dead or escaped):
             previous_room = current_room
             current_room = next_room
             print(f"You move to {current_room.name}.")
+            if current_room.room_type == "exit":
+                print(glass_bridge.description)
         else:
             print("You can't go that way!")
 

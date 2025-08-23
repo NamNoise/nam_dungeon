@@ -7,6 +7,7 @@ class GlassBridge:
         self.pattern = [random.choice(["left", "right"]) for _ in range(steps)]
         self.failed = False
         self.completed = False
+        self.description = "A narrow glass bridge stretches across a dark abyss to the exit. Each step looking dangerously fragile."
 
     def attempt_step(self, choice):
         if self.failed or self.completed:
