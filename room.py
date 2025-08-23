@@ -33,10 +33,14 @@ class Room:
         print(self.description)
         
         if self.linked_rooms:
-            exits = ", ".join(self.linked_rooms.keys())
-            print(f"Exits: {exits}")
+            directions = [direction.captalize() for direction in self.linked_rooms.keys()]
+            if len(directions) > 1:
+                print(f"You can go {directions[0]} (type out the direction).")
+            else:
+                print("You can go: " + ", ".join(directions[:-1]) + " and " + directions[-1] + " (type out the direction).")
         else:
-            print("There's no obvious way out here.")
+            print("There are no visible exits.")
+
 
     def move(self, direction):
         return self.linked_rooms.get(direction, None)
@@ -53,4 +57,4 @@ class Room:
             print(f"A hidden path to the {direction} is revealed!")
             print("You can now move in that direction.")
         else:
-            print(f"No hidden room in the {direction} direction.")
+            print(f"No hidden room in the {direction} direction.") 

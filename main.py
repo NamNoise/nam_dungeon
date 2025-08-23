@@ -90,6 +90,13 @@ while not (dead or escaped):
     room_item = current_room.get_item()
     if room_item:
         room_item.describe()
+        take_choice = input(f" Do you want to take the {room_item.name}? (yes/no): ").lower().strip()
+        if take_choice == "yes":
+            print(f"You take the {room_item.name}.")
+            player.take_item(room_item.name)
+            current_room.set_item(None)
+        else:
+            print(f"You leave the {room_item.name} behind.")
 
     if current_room.room_type == "puzzle" and current_room.puzzle and not current_room.puzzle.solved:
         print("There is a puzzle here, it asks:", current_room.puzzle.question)
@@ -98,15 +105,18 @@ while not (dead or escaped):
     command = input("> ").lower().strip()
 
     if command in ["north", "south", "east", "west"]:
-        next_room = current_room.move(command)
-        if next_room:
-            previous_room = current_room
-            current_room = next_room
-            print(f"You move to {current_room.name}.")
-            if current_room.room_type == "exit":
-                print(glass_bridge.description)
+        if isinstance(current_room.get_character(), Enemy):
+            print(f"The {current_room.get_character().name} blocks your path! You must defeat it first.")
         else:
-            print("You can't go that way!")
+            next_room = current_room.move(command)
+            if next_room:
+                previous_room = current_room
+                current_room = next_room
+                print(f"You move to {current_room.name}.")
+                if current_room.room_type == "exit":
+                    print(glass_bridge.description)
+            else:
+                print("You can't go that way!")
 
     elif command == "exit":
         current_room = current_room.move(command)
@@ -159,19 +169,21 @@ while not (dead or escaped):
             print("The glass shatters beneath you! You fall into the abyss...")
             dead = True
         else:
-            print("Step onto the bridge... left or right?")
-            choice = input("Your choice: ").lower().strip()
-            if choice in ["left", "right"]:
-                if glass_bridge.attempt(choice):
-                    if glass_bridge.completed:
-                        print("You crossed the glass bridge safely!")
+            print("You step onto the glass bridge...")
+            while not (glass_bridge.completed or glass_bridge.failed):
+                choice = input("Choose your step (left/right): ").lower().strip()
+                if choice in ["left", "right"]:
+                    if glass_bridge.attempt_step(choice):
+                        if glass_bridge.completed:
+                            print("You crossed the glass bridge safely!")
+                        else:
+                            print("Safe! You move forward to the next step...")
                     else:
-                        print("Safe! You move forward to the next step...")
+                        print("CRACK! The glass shatters beneath you! You fall into the abyss...")
+                        glass_bridge.failed = True
+                        dead = True
                 else:
-                    print("CRACK! The glass shatters beneath you! You fall into the abyss...")
-                    dead = True
-            else:
-                print("Invalid choice. You must choose 'left' or 'right'.")
+                    print("Invalid choice. You must choose 'left' or 'right'.")
     
     elif command == "open exit" and current_room.room_type == "exit":
         if not glass_bridge.completed:
@@ -205,6 +217,10 @@ elif dead:
     print("\nYour journey ends here. Better luck next time!")
 
 print("Thank you for playing!")
-print("Game Over. Exiting in 3 seconds...")
-time.sleep(3)
+print("Game Over. Exiting in 3...")
+time.sleep(1)
+print("2...")
+time.sleep(1)
+print("1...")
+time.sleep(1)
 print("Goodbye!")

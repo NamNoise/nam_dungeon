@@ -1,7 +1,7 @@
 import random
 
 class GlassBridge:
-    def __init__(self, steps=5):
+    def __init__(self, steps=3):
         self.steps = steps
         self.current_step = 0
         self.pattern = [random.choice(["left", "right"]) for _ in range(steps)]
