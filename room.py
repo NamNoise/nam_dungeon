@@ -33,8 +33,8 @@ class Room:
         print(self.description)
         
         if self.linked_rooms:
-            directions = [direction.captalize() for direction in self.linked_rooms.keys()]
-            if len(directions) > 1:
+            directions = [direction.capitalize() for direction in self.linked_rooms.keys()]
+            if len(directions) == 1:
                 print(f"You can go {directions[0]} (type out the direction).")
             else:
                 print("You can go: " + ", ".join(directions[:-1]) + " and " + directions[-1] + " (type out the direction).")

@@ -77,7 +77,6 @@ while not (dead or escaped):
                 print("Your bag is empty.")
         else:
             print("You hesitate, and the chamber begins to push you back...")
-
         time.sleep(2)
         print("A mysterious force pushes you back to the Treasure Hall.")
         current_room = previous_room
@@ -113,6 +112,11 @@ while not (dead or escaped):
                 previous_room = current_room
                 current_room = next_room
                 print(f"You move to {current_room.name}.")
+                if current_room.linked_rooms:
+                    dirs = [d.capitalize() for d in current_room.linked_rooms.keys()]
+                    print("You can go: " + (dirs[0] + "." if len(dirs) == 1 else ", ".join(dirs[:-1]) + "and " + dirs[-1] + "."))
+                else:
+                    print("There are no visible exits.")
                 if current_room.room_type == "exit":
                     print(glass_bridge.description)
             else:
@@ -129,8 +133,13 @@ while not (dead or escaped):
         fight_with = input("> ").lower().strip()
         if fight_with in player.inventory:
             if inhabitant.fight(fight_with):
-                print("You defeated the enemy!")
+                print("You defeated the enemy! The path is now clear.")
                 current_room.set_character(None)
+                if current_room.linked_rooms:
+                    dirs = [d.capitalize() for d in current_room.linked_rooms.keys()]
+                    print("You can go: " + (dirs[0] + "." if len(dirs) == 1 else ", ".join(dirs[:-1]) + " and " + dirs[-1] + "."))
+                else:
+                    print("There are no visible exits.")
             else:
                 print("You were defeated...")
                 dead = True
