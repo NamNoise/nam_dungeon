@@ -152,20 +152,21 @@ while not (dead or escaped):
         inhabitant.talk()
 
     # Fight an enemy
-    elif command == "fight" and isinstance(inhabitant, Enemy):
+    elif command == "fight" and isinstance(inhabitant, Enemy): # Check if player type "fight" and if there's a fightable enemy
         print("What will you fight with?")
-        fight_with = input("> ").lower().strip()
-        if fight_with in player.inventory:
-            if inhabitant.fight(fight_with):
+        fight_with = input("> ").lower().strip() # Player weapon command input
+        if fight_with in player.inventory: # Check if weapon in player's inventory
+            if inhabitant.fight(fight_with): # Check if the enemy can be defeated with the selected weapon
                 print("You defeated the enemy! The path is now clear.")
                 current_room.set_character(None)
                 # Show new exits after defeating enemy
                 if current_room.linked_rooms:
                     dirs = [d.capitalize() for d in current_room.linked_rooms.keys()]
+                    # Print available directions after defeating the enemy
                     print("You can go: " + (dirs[0] + "." if len(dirs) == 1 else ", ".join(dirs[:-1]) + " and " + dirs[-1] + "."))
-                else:
+                else: # If no exits in the room, then print the following line
                     print("There are no visible exits.")
-            else:
+            else: # If the item selected is not a weapon, then the enemy will defeat the player
                 print("You were defeated...")
                 dead = True
         else:
@@ -176,65 +177,65 @@ while not (dead or escaped):
         inhabitant.pat()
 
     # Take an item
-    elif command == "take" and room_item:
+    elif command == "take" and room_item: # Check if there's an item in the room when type "take"
         print(f"You take the {room_item.name}.")
-        player.take_item(room_item.name)
-        current_room.set_item(None)
+        player.take_item(room_item.name) # Add item to inventory
+        current_room.set_item(None) # Remove item from room
 
     # Show inventory
-    elif command == "bag":
-        if player.inventory:
+    elif command == "bag": # Check if player types "bag" to see inventory
+        if player.inventory: # Check if inventory is not empty
             print("You have the following items in your bag:")
-            for i in player.inventory:
+            for i in player.inventory: # Loop through and print each item
                 print(f"- {i}")
-        elif player.inventory == []:
+        elif player.inventory == []: # Handle empty inventory
             print("Your bag is empty.")
     
     # Solve puzzle
-    elif command == "solve" and current_room.puzzle:
-        answer = input("Your answer: ").lower().strip()
-        if current_room.puzzle.attempt(answer):
+    elif command == "solve" and current_room.puzzle: # Check if there's a puzzle in the room when type "solve"
+        answer = input("Your answer: ").lower().strip() # Prompt for puzzle answer
+        if current_room.puzzle.attempt(answer): # Check if answer fit with puzzle set answer
             print("The puzzle is solved! A path forward is revealed.")
             # Reveal hidden rooms after puzzle
-            for direction in list(current_room.hidden_rooms.keys()):
-                current_room.reveal_hidden(direction)
-        else:
+            for direction in list(current_room.hidden_rooms.keys()): # Reveal all hidden rooms
+                current_room.reveal_hidden(direction) 
+        else: # Incorrect answer handling
             print("Incorrect answer. Try again.")
     
     # Cross the glass bridge
-    elif command == "cross bridge" and current_room.room_type == "exit":
-        if glass_bridge.completed:
+    elif command == "cross bridge" and current_room.room_type == "exit": # Check if the player is at the exit room when type "cross bridge"
+        if glass_bridge.completed: # Check if already crossed then print success message
             print("You have already crossed the bridge safely.")
-        elif glass_bridge.failed:
+        elif glass_bridge.failed: # Check if already failed then print falling message
             print("The glass shatters beneath you! You fall into the abyss...")
-            dead = True
-        else:
+            dead = True # make player dead
+        else: # Check if not crossed or failed then start crossing sequence
             print("You step onto the glass bridge...")
-            while not (glass_bridge.completed or glass_bridge.failed):
-                choice = input("Choose your step (left/right): ").lower().strip()
-                if choice in ["left", "right"]:
-                    if glass_bridge.attempt_step(choice):
-                        if glass_bridge.completed:
+            while not (glass_bridge.completed or glass_bridge.failed): # Loop until bridge is crossed or failed
+                choice = input("Choose your step (left/right): ").lower().strip() # Prompt for left/right step
+                if choice in ["left", "right"]: # Validate input
+                    if glass_bridge.attempt_step(choice): # Attempt the step
+                        if glass_bridge.completed: # Check if completed after step then print success message
                             print("You crossed the glass bridge safely!")
-                        else:
+                        else: # Print safe step message
                             print("Safe! You move forward to the next step...")
-                    else:
+                    else: # If step fails, print falling message and mark as failed
                         print("CRACK! The glass shatters beneath you! You fall into the abyss...")
                         glass_bridge.failed = True
                         dead = True
-                else:
+                else: # Invalid input handling
                     print("Invalid choice. You must choose 'left' or 'right'.")
     
     # Open exit door
     elif command == "open exit" and current_room.room_type == "exit":
-        if not glass_bridge.completed:
+        if not glass_bridge.completed: # Check if the player has crossed the bridge
             print("You need to cross the glass bridge first before opening the exit!")
-        else:
+        else: # Attempt to open exit
             print("You approach the massive stone gate.")
-            if "ancient key" in player.inventory:
+            if "ancient key" in player.inventory: # Check for key
                 print("You have the ancient key. Do you want to use it to open the gate? (yes/no)")
-                use_key = input("> ").lower().strip()
-                if use_key == "yes":
+                use_key = input("> ").lower().strip() # Prompt for using key
+                if use_key == "yes": # Use the key to open exit
                     print("You insert the ancient key into the lock and turn it. The gate creaks open!")
                     current_room = exit_room
                     print("You step through the gate and into the light of freedom!")
@@ -250,8 +251,9 @@ while not (dead or escaped):
     # Invalid command handling
     else:
         print("Invalid command. Try one of these:")
-        print("- Movement: north, south, esat, west")
-        print("- Actions: talk, fight, pat, take, bag, solve, open exit")
+        print("- Movement: north, south, east, west")
+        print("- Actions: talk (if there's a inhabitant in room), fight (if there's a inhabitant in room), " \
+        "pat (if there's), take, bag, solve, open exit")
         print("- Exit: quit")
 
 # End game messages
@@ -260,11 +262,14 @@ if escaped:
 elif dead:
     print("\nYour journey ends here. Better luck next time!")
 
+print("-" * 20)
 print("Thank you for playing!")
+print("-" * 20)
 print("Game Over. Exiting in 3...")
-time.sleep(1)
+time.sleep(1) # Pause for dramatic effect
 print("2...")
 time.sleep(1)
 print("1...")
 time.sleep(1)
+print("-" * 20)
 print("Goodbye!")
