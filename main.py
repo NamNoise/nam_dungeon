@@ -253,7 +253,7 @@ while not (dead or escaped):
         print("Invalid command. Try one of these:")
         print("- Movement: north, south, east, west")
         print("- Actions: talk (if there's a inhabitant in room), fight (if there's a inhabitant in room), " \
-        "pat (if there's), take, bag, solve, open exit")
+        "pat (if there's a friendly character in room), take, bag, solve, cross bridge, open exit")
         print("- Exit: quit")
 
 # End game messages
