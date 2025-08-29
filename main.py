@@ -60,7 +60,13 @@ escaped = False
 # Game intro
 print("Welcome to the Dungeon Adventure!")
 print("Your goal is to escape the dungeon by solving puzzles, fighting enemies, and collecting items.")
-print("Type 'exit' to exit at any time, or 'quit' to end the game.")
+print("Here are the keybind you could've type during the game:")
+print("- Movement: north, south, east, west")
+print("- Actions: talk (if there's a inhabitant in room), fight (if there's a inhabitant in room), " \
+    "pat (if there's a friendly character in room), take (if there's an item in room), bag (check inventory), " \
+    "solve (if there's a puzzle in room), cross bridge (if you're at the dungeon exit), open exit (if you've crossed the glass bridge)")
+print("- Exit: quit")
+
 
 # Main game loop
 while not (dead or escaped):
